@@ -218,7 +218,8 @@
       align-items: center;
     }
 
-    .rsvp-form select {
+    .rsvp-form select,
+    .rsvp-form input[type="text"] {
       width: 100%;
       padding: 14px 18px;
       font-family: 'Cormorant Garamond', serif;
@@ -226,12 +227,16 @@
       border: 1px solid #D4CDB8;
       background: #fff;
       color: #3A3A2A;
-      appearance: none;
-      cursor: pointer;
       outline: none;
     }
 
-    .rsvp-form select:focus {
+    .rsvp-form select {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .rsvp-form select:focus,
+    .rsvp-form input[type="text"]:focus {
       border-color: #5C6631;
     }
 
@@ -403,13 +408,10 @@
   <section id="rsvp">
     <div class="section-title">RSVP</div>
     <div class="rsvp-container">
-      <p>Please let us know if you'll be joining us for our special day.</p>
+      <p>Please let us know if you'll be joining us for our special day.<br>
+        <em style="font-size:15px; color:#8B8B6A;">Enter your name as it appears on your invitation.</em></p>
       <form class="rsvp-form" id="rsvpForm">
-        <div class="select-wrapper">
-          <select id="guestName" required>
-            <option value="" disabled selected>Loading guest list...</option>
-          </select>
-        </div>
+        <input type="text" id="guestName" placeholder="Your full name" required autocomplete="off">
         <div class="select-wrapper">
           <select id="rsvpResponse" required>
             <option value="" disabled selected>Will you attend?</option>
@@ -452,53 +454,17 @@
   </footer>
 
   <script>
-    // ── Configuration ──
-    const SHEET_ID = '1F3D7djrxzRBC4pA-pG9UuoNh-UTifmVJgDCXpOAdve0';
-    const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-
-    // REPLACE THIS after deploying your Google Apps Script (see GOOGLE_APPS_SCRIPT.js)
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDeDQ8etes83XznPXnebKFOTClnBxFzvkL0ipi_mngnJPwiGQL3qgxg0drkchpKjK58w/exec';
 
-    // ── Load guest names from Google Sheet ──
-    async function loadGuests() {
-      const select = document.getElementById('guestName');
-      try {
-        const res = await fetch(SHEET_CSV_URL);
-        const csv = await res.text();
-        const rows = csv.trim().split('\n').slice(1); // skip header
-        select.innerHTML = '<option value="" disabled selected>Select your name</option>';
-        rows.forEach(row => {
-          // CSV values are quoted: "Joe Bob","YES"
-          const name = row.split(',')[0].replace(/^"|"$/g, '');
-          if (name) {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            select.appendChild(opt);
-          }
-        });
-      } catch (err) {
-        select.innerHTML = '<option value="" disabled selected>Could not load guest list</option>';
-      }
-    }
-
-    loadGuests();
-
-    // ── RSVP form submission ──
     document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      const name = document.getElementById('guestName').value;
+      const name = document.getElementById('guestName').value.trim();
       const response = document.getElementById('rsvpResponse').value;
       const msg = document.getElementById('rsvpMessage');
       const btn = this.querySelector('button');
 
       if (!name || !response) {
-        msg.textContent = 'Please select your name and response.';
-        return;
-      }
-
-      if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-        msg.textContent = 'RSVP endpoint not configured yet. See GOOGLE_APPS_SCRIPT.js for setup.';
+        msg.textContent = 'Please enter your name and select a response.';
         return;
       }
 
@@ -512,11 +478,10 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, rsvp: response })
         });
-        // no-cors means we can't read the response, but the write still happens
         msg.textContent = response === 'YES'
           ? `Thank you, ${name}! We can't wait to celebrate with you.`
           : `Thank you, ${name}. We'll miss you!`;
-        document.getElementById('guestName').selectedIndex = 0;
+        document.getElementById('guestName').value = '';
         document.getElementById('rsvpResponse').selectedIndex = 0;
       } catch (err) {
         msg.textContent = 'Something went wrong. Please try again.';
