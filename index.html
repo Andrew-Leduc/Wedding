@@ -478,6 +478,88 @@
       min-height: 24px;
     }
 
+    /* ── Password Gate ── */
+    .password-gate {
+      position: fixed;
+      inset: 0;
+      background: #FAF6ED;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .password-gate.hidden {
+      display: none;
+    }
+
+    .password-gate .gate-monogram {
+      width: 80px;
+      height: 100px;
+      background: #F5EFDC;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #D4CDB8;
+      margin-bottom: 10px;
+    }
+
+    .password-gate .gate-monogram span {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 48px;
+      color: #8B8B6A;
+    }
+
+    .password-gate p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      color: #6A6A4A;
+      letter-spacing: 2px;
+    }
+
+    .password-gate input[type="password"] {
+      width: 280px;
+      padding: 14px 18px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      border: 1px solid #D4CDB8;
+      background: #fff;
+      color: #3A3A2A;
+      outline: none;
+      text-align: center;
+    }
+
+    .password-gate input[type="password"]:focus {
+      border-color: #5C6631;
+    }
+
+    .password-gate .gate-btn {
+      padding: 14px 50px;
+      background: #5C6631;
+      color: #FAF6ED;
+      border: none;
+      font-family: 'Le Jour Serif', 'Cormorant Garamond', serif;
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .password-gate .gate-btn:hover {
+      background: #4A5228;
+    }
+
+    .password-gate .gate-error {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      color: #9B4D4D;
+      min-height: 20px;
+    }
+
     /* ── Accommodations ── */
     #accommodations {
       background-color: #F3EEDE;
@@ -558,6 +640,15 @@
   </style>
 </head>
 <body>
+
+  <!-- Password Gate -->
+  <div class="password-gate" id="passwordGate">
+    <div class="gate-monogram"><span>F</span></div>
+    <p>Enter the password to continue</p>
+    <input type="password" id="gatePassword" placeholder="Password" autofocus>
+    <button class="gate-btn" id="gateSubmit">Enter</button>
+    <div class="gate-error" id="gateError"></div>
+  </div>
 
   <!-- Navigation -->
   <nav>
@@ -684,6 +775,32 @@
   </footer>
 
   <script>
+    // ── Password Gate ──
+    const SITE_PASSWORD = 'franweddingsca';
+    const gate = document.getElementById('passwordGate');
+    const gateInput = document.getElementById('gatePassword');
+    const gateError = document.getElementById('gateError');
+
+    if (sessionStorage.getItem('wedding_auth') === 'true') {
+      gate.classList.add('hidden');
+    }
+
+    function checkPassword() {
+      if (gateInput.value.trim().toLowerCase() === SITE_PASSWORD) {
+        sessionStorage.setItem('wedding_auth', 'true');
+        gate.classList.add('hidden');
+      } else {
+        gateError.textContent = 'Incorrect password. Please try again.';
+        gateInput.value = '';
+        gateInput.focus();
+      }
+    }
+
+    document.getElementById('gateSubmit').addEventListener('click', checkPassword);
+    gateInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+
     const SHEET_ID = '1F3D7djrxzRBC4pA-pG9UuoNh-UTifmVJgDCXpOAdve0';
     const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDeDQ8etes83XznPXnebKFOTClnBxFzvkL0ipi_mngnJPwiGQL3qgxg0drkchpKjK58w/exec';
