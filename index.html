@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Celebration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background-color: #FAF6ED;
+      color: #3A3A2A;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #5C6631;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 40px;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #FAF6ED;
+      text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover {
+      opacity: 0.7;
+    }
+
+    .nav-monogram {
+      width: 80px;
+      height: 100px;
+      background: #F5EFDC;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #D4CDB8;
+      margin: -30px 30px -40px;
+      position: relative;
+      top: 10px;
+    }
+
+    .nav-monogram span {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 48px;
+      color: #8B8B6A;
+    }
+
+    /* ── Sections (shared) ── */
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 40px 80px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 14px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #5C6631;
+      margin-bottom: 30px;
+    }
+
+    /* ── Home / Hero ── */
+    #home {
+      background-color: #FAF6ED;
+    }
+
+    .envelope {
+      width: 420px;
+      max-width: 90vw;
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg, #6A7234 0%, #5C6631 50%, #6A7234 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    /* envelope flap lines */
+    .envelope::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(to bottom right, transparent 49.5%, rgba(255,255,255,0.08) 49.5%, rgba(255,255,255,0.08) 50.5%, transparent 50.5%),
+        linear-gradient(to bottom left,  transparent 49.5%, rgba(255,255,255,0.08) 49.5%, rgba(255,255,255,0.08) 50.5%, transparent 50.5%);
+      pointer-events: none;
+    }
+
+    .envelope-text {
+      font-family: 'Pinyon Script', cursive;
+      color: #FAF6ED;
+      font-size: 52px;
+      text-align: center;
+      line-height: 1.2;
+      z-index: 1;
+    }
+
+    .hero-details {
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .hero-names {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 36px;
+      color: #5C6631;
+      margin-bottom: 10px;
+    }
+
+    .hero-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 18px;
+      letter-spacing: 3px;
+      color: #7A7A5A;
+    }
+
+    /* ── Schedule ── */
+    #schedule {
+      background-color: #F3EEDE;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .timeline-item {
+      text-align: center;
+      padding: 30px;
+      border: 1px solid #D4CDB8;
+      background: #FAF6ED;
+    }
+
+    .timeline-item h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 22px;
+      color: #5C6631;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .timeline-item p {
+      font-size: 17px;
+      color: #6A6A4A;
+      line-height: 1.6;
+    }
+
+    /* ── RSVP ── */
+    #rsvp {
+      background-color: #FAF6ED;
+    }
+
+    .rsvp-container {
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .rsvp-container p {
+      font-size: 17px;
+      color: #6A6A4A;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .rsvp-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .rsvp-form select {
+      width: 100%;
+      padding: 14px 18px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      border: 1px solid #D4CDB8;
+      background: #fff;
+      color: #3A3A2A;
+      appearance: none;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .rsvp-form select:focus {
+      border-color: #5C6631;
+    }
+
+    .select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .select-wrapper::after {
+      content: '\25BC';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: #8B8B6A;
+      pointer-events: none;
+    }
+
+    .rsvp-btn {
+      padding: 14px 50px;
+      background: #5C6631;
+      color: #FAF6ED;
+      border: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .rsvp-btn:hover {
+      background: #4A5228;
+    }
+
+    .rsvp-message {
+      margin-top: 20px;
+      font-size: 17px;
+      color: #5C6631;
+      min-height: 24px;
+    }
+
+    /* ── Accommodations ── */
+    #accommodations {
+      background-color: #F3EEDE;
+    }
+
+    .accom-cards {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 800px;
+    }
+
+    .accom-card {
+      background: #FAF6ED;
+      border: 1px solid #D4CDB8;
+      padding: 35px 30px;
+      text-align: center;
+      flex: 1 1 300px;
+      max-width: 360px;
+    }
+
+    .accom-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 20px;
+      color: #5C6631;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .accom-card p {
+      font-size: 16px;
+      color: #6A6A4A;
+      line-height: 1.6;
+    }
+
+    /* ── Registry ── */
+    #registry {
+      background-color: #FAF6ED;
+    }
+
+    .registry-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .registry-link {
+      display: inline-block;
+      padding: 16px 40px;
+      border: 1px solid #5C6631;
+      color: #5C6631;
+      text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+
+    .registry-link:hover {
+      background: #5C6631;
+      color: #FAF6ED;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px;
+      background: #5C6631;
+      color: #D4CDB8;
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li>
+        <div class="nav-monogram"><span>F</span></div>
+      </li>
+      <li><a href="#accommodations">Accommodations</a></li>
+      <li><a href="#registry">Registry</a></li>
+    </ul>
+  </nav>
+
+  <!-- Home / Hero -->
+  <section id="home">
+    <div class="envelope">
+      <div class="envelope-text">You're<br>invited</div>
+    </div>
+    <div class="hero-details">
+      <div class="hero-names">Names &amp; Names</div>
+      <div class="hero-date">June 15, 2026 &bull; City, State</div>
+    </div>
+  </section>
+
+  <!-- Schedule -->
+  <section id="schedule">
+    <div class="section-title">Schedule</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h3>Ceremony</h3>
+        <p>4:00 PM<br>Venue Name<br>123 Street, City, State</p>
+      </div>
+      <div class="timeline-item">
+        <h3>Cocktail Hour</h3>
+        <p>5:00 PM<br>Garden Terrace</p>
+      </div>
+      <div class="timeline-item">
+        <h3>Reception</h3>
+        <p>6:00 PM<br>Grand Ballroom</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section id="rsvp">
+    <div class="section-title">RSVP</div>
+    <div class="rsvp-container">
+      <p>Please let us know if you'll be joining us for our special day.</p>
+      <form class="rsvp-form" id="rsvpForm">
+        <div class="select-wrapper">
+          <select id="guestName" required>
+            <option value="" disabled selected>Loading guest list...</option>
+          </select>
+        </div>
+        <div class="select-wrapper">
+          <select id="rsvpResponse" required>
+            <option value="" disabled selected>Will you attend?</option>
+            <option value="YES">Joyfully Accepts</option>
+            <option value="NO">Respectfully Declines</option>
+          </select>
+        </div>
+        <button type="submit" class="rsvp-btn">Submit RSVP</button>
+      </form>
+      <div class="rsvp-message" id="rsvpMessage"></div>
+    </div>
+  </section>
+
+  <!-- Accommodations -->
+  <section id="accommodations">
+    <div class="section-title">Accommodations</div>
+    <div class="accom-cards">
+      <div class="accom-card">
+        <h3>Hotel Option 1</h3>
+        <p>123 Hotel Road<br>City, State 12345<br>Group rate: $XXX/night<br>Code: WEDDING2026</p>
+      </div>
+      <div class="accom-card">
+        <h3>Hotel Option 2</h3>
+        <p>456 Inn Boulevard<br>City, State 12345<br>Group rate: $XXX/night<br>Code: WEDDING2026</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registry -->
+  <section id="registry">
+    <div class="section-title">Registry</div>
+    <div class="registry-links">
+      <a href="#" class="registry-link">Registry 1</a>
+      <a href="#" class="registry-link">Registry 2</a>
+    </div>
+  </section>
+
+  <footer>
+    With Love &bull; 2026
+  </footer>
+
+  <script>
+    // ── Configuration ──
+    const SHEET_ID = '1F3D7djrxzRBC4pA-pG9UuoNh-UTifmVJgDCXpOAdve0';
+    const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+
+    // REPLACE THIS after deploying your Google Apps Script (see GOOGLE_APPS_SCRIPT.js)
+    const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+    // ── Load guest names from Google Sheet ──
+    async function loadGuests() {
+      const select = document.getElementById('guestName');
+      try {
+        const res = await fetch(SHEET_CSV_URL);
+        const csv = await res.text();
+        const rows = csv.trim().split('\n').slice(1); // skip header
+        select.innerHTML = '<option value="" disabled selected>Select your name</option>';
+        rows.forEach(row => {
+          // CSV values are quoted: "Joe Bob","YES"
+          const name = row.split(',')[0].replace(/^"|"$/g, '');
+          if (name) {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            select.appendChild(opt);
+          }
+        });
+      } catch (err) {
+        select.innerHTML = '<option value="" disabled selected>Could not load guest list</option>';
+      }
+    }
+
+    loadGuests();
+
+    // ── RSVP form submission ──
+    document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('guestName').value;
+      const response = document.getElementById('rsvpResponse').value;
+      const msg = document.getElementById('rsvpMessage');
+      const btn = this.querySelector('button');
+
+      if (!name || !response) {
+        msg.textContent = 'Please select your name and response.';
+        return;
+      }
+
+      if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+        msg.textContent = 'RSVP endpoint not configured yet. See GOOGLE_APPS_SCRIPT.js for setup.';
+        return;
+      }
+
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, rsvp: response })
+        });
+        // no-cors means we can't read the response, but the write still happens
+        msg.textContent = response === 'YES'
+          ? `Thank you, ${name}! We can't wait to celebrate with you.`
+          : `Thank you, ${name}. We'll miss you!`;
+        document.getElementById('guestName').selectedIndex = 0;
+        document.getElementById('rsvpResponse').selectedIndex = 0;
+      } catch (err) {
+        msg.textContent = 'Something went wrong. Please try again.';
+      } finally {
+        btn.textContent = 'Submit RSVP';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
