@@ -240,6 +240,66 @@
       border-color: #5C6631;
     }
 
+    .autocomplete-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #D4CDB8;
+      border-top: none;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 10;
+      display: none;
+    }
+
+    .autocomplete-list div {
+      padding: 12px 18px;
+      cursor: pointer;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      color: #3A3A2A;
+    }
+
+    .autocomplete-list div:hover,
+    .autocomplete-list div.active {
+      background: #F3EEDE;
+    }
+
+    .partner-rsvp {
+      width: 100%;
+      padding: 16px 20px;
+      background: #F3EEDE;
+      border: 1px solid #D4CDB8;
+      display: none;
+    }
+
+    .partner-rsvp label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      color: #3A3A2A;
+      cursor: pointer;
+    }
+
+    .partner-rsvp input[type="checkbox"] {
+      accent-color: #5C6631;
+      width: 18px;
+      height: 18px;
+    }
+
+    .partner-response {
+      margin-top: 12px;
+      display: none;
+    }
+
     .select-wrapper {
       position: relative;
       width: 100%;
@@ -411,13 +471,31 @@
       <p>Please let us know if you'll be joining us for our special day.<br>
         <em style="font-size:15px; color:#8B8B6A;">Enter your name as it appears on your invitation.</em></p>
       <form class="rsvp-form" id="rsvpForm">
-        <input type="text" id="guestName" placeholder="Your full name" required autocomplete="off">
+        <div class="autocomplete-wrapper">
+          <input type="text" id="guestName" placeholder="Start typing your name..." required autocomplete="off">
+          <div class="autocomplete-list" id="autocompleteList"></div>
+        </div>
         <div class="select-wrapper">
           <select id="rsvpResponse" required>
             <option value="" disabled selected>Will you attend?</option>
             <option value="YES">Joyfully Accepts</option>
             <option value="NO">Respectfully Declines</option>
           </select>
+        </div>
+        <div class="partner-rsvp" id="partnerRsvp">
+          <label>
+            <input type="checkbox" id="partnerCheck">
+            Also RSVP for <strong id="partnerNameLabel"></strong>?
+          </label>
+          <div class="partner-response" id="partnerResponse">
+            <div class="select-wrapper">
+              <select id="partnerRsvpResponse">
+                <option value="" disabled selected>Will they attend?</option>
+                <option value="YES">Joyfully Accepts</option>
+                <option value="NO">Respectfully Declines</option>
+              </select>
+            </div>
+          </div>
         </div>
         <button type="submit" class="rsvp-btn">Submit RSVP</button>
       </form>
@@ -454,8 +532,87 @@
   </footer>
 
   <script>
+    const SHEET_ID = '1F3D7djrxzRBC4pA-pG9UuoNh-UTifmVJgDCXpOAdve0';
+    const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDeDQ8etes83XznPXnebKFOTClnBxFzvkL0ipi_mngnJPwiGQL3qgxg0drkchpKjK58w/exec';
 
+    // Guest data: [{name, partner}]
+    let guests = [];
+
+    async function loadGuests() {
+      try {
+        const res = await fetch(SHEET_CSV_URL);
+        const csv = await res.text();
+        const rows = csv.trim().split('\n').slice(1);
+        guests = rows.map(row => {
+          const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
+          return { name: cols[0] || '', partner: cols[2] || '' };
+        }).filter(g => g.name);
+      } catch (err) {
+        guests = [];
+      }
+    }
+
+    loadGuests();
+
+    // ── Autocomplete ──
+    const nameInput = document.getElementById('guestName');
+    const list = document.getElementById('autocompleteList');
+    let selectedGuest = null;
+
+    nameInput.addEventListener('input', function() {
+      const val = this.value.trim().toLowerCase();
+      selectedGuest = null;
+      hidePartner();
+      list.innerHTML = '';
+
+      if (val.length < 2) { list.style.display = 'none'; return; }
+
+      const matches = guests.filter(g => g.name.toLowerCase().includes(val));
+      if (matches.length === 0) { list.style.display = 'none'; return; }
+
+      matches.forEach(g => {
+        const div = document.createElement('div');
+        div.textContent = g.name;
+        div.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          nameInput.value = g.name;
+          selectedGuest = g;
+          list.style.display = 'none';
+          if (g.partner) showPartner(g.partner);
+        });
+        list.appendChild(div);
+      });
+      list.style.display = 'block';
+    });
+
+    nameInput.addEventListener('blur', () => { list.style.display = 'none'; });
+
+    // ── Partner RSVP toggle ──
+    const partnerRsvpEl = document.getElementById('partnerRsvp');
+    const partnerLabel = document.getElementById('partnerNameLabel');
+    const partnerCheck = document.getElementById('partnerCheck');
+    const partnerResponse = document.getElementById('partnerResponse');
+
+    function showPartner(partnerName) {
+      partnerLabel.textContent = partnerName;
+      partnerRsvpEl.style.display = 'block';
+      partnerCheck.checked = false;
+      partnerResponse.style.display = 'none';
+    }
+
+    function hidePartner() {
+      partnerRsvpEl.style.display = 'none';
+      partnerCheck.checked = false;
+      partnerResponse.style.display = 'none';
+    }
+
+    partnerCheck.addEventListener('change', function() {
+      partnerResponse.style.display = this.checked ? 'block' : 'none';
+      if (!this.checked) document.getElementById('partnerRsvpResponse').selectedIndex = 0;
+    });
+
+    // ── Submit ──
     document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const name = document.getElementById('guestName').value.trim();
@@ -471,18 +628,40 @@
       btn.textContent = 'Sending...';
       btn.disabled = true;
 
+      const payload = { name, rsvp: response };
+
+      if (partnerCheck.checked && selectedGuest && selectedGuest.partner) {
+        const pResponse = document.getElementById('partnerRsvpResponse').value;
+        if (!pResponse) {
+          msg.textContent = 'Please select a response for your partner.';
+          btn.textContent = 'Submit RSVP';
+          btn.disabled = false;
+          return;
+        }
+        payload.partnerName = selectedGuest.partner;
+        payload.partnerRsvp = pResponse;
+      }
+
       try {
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, rsvp: response })
+          body: JSON.stringify(payload)
         });
-        msg.textContent = response === 'YES'
+        let thankYou = response === 'YES'
           ? `Thank you, ${name}! We can't wait to celebrate with you.`
           : `Thank you, ${name}. We'll miss you!`;
+        if (payload.partnerName) {
+          thankYou += payload.partnerRsvp === 'YES'
+            ? ` ${payload.partnerName}'s RSVP has been recorded too!`
+            : ` We've noted ${payload.partnerName}'s response as well.`;
+        }
+        msg.textContent = thankYou;
         document.getElementById('guestName').value = '';
         document.getElementById('rsvpResponse').selectedIndex = 0;
+        selectedGuest = null;
+        hidePartner();
       } catch (err) {
         msg.textContent = 'Something went wrong. Please try again.';
       } finally {
