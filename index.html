@@ -84,6 +84,137 @@
       color: #8B8B6A;
     }
 
+    /* ── Hamburger (hidden on desktop) ── */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 120;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #FAF6ED;
+      margin: 5px 0;
+      transition: all 0.3s;
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ── Mobile overlay menu ── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 280px;
+      height: 100%;
+      background: #5C6631;
+      z-index: 110;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      transition: right 0.35s ease;
+    }
+
+    .mobile-menu.open {
+      right: 0;
+    }
+
+    .mobile-menu a {
+      color: #FAF6ED;
+      text-decoration: none;
+      font-family: 'Le Jour Serif', 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 18px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      transition: opacity 0.3s;
+    }
+
+    .mobile-menu a:hover {
+      opacity: 0.7;
+    }
+
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 105;
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+
+    .mobile-overlay.open {
+      opacity: 1;
+    }
+
+    /* ── Mobile nav monogram ── */
+    .mobile-nav-monogram {
+      width: 50px;
+      height: 64px;
+      background: #F5EFDC;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #D4CDB8;
+      text-decoration: none;
+    }
+
+    .mobile-nav-monogram span {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 32px;
+      color: #8B8B6A;
+    }
+
+    /* ── Mobile breakpoint ── */
+    @media (max-width: 768px) {
+      nav {
+        justify-content: space-between;
+        padding: 14px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .mobile-menu {
+        display: flex;
+      }
+
+      .mobile-overlay {
+        display: block;
+        pointer-events: none;
+      }
+
+      .mobile-overlay.open {
+        pointer-events: auto;
+      }
+
+      section {
+        padding: 100px 24px 60px;
+      }
+    }
+
     /* ── Sections (shared) ── */
     section {
       min-height: 100vh;
@@ -439,7 +570,21 @@
       <li><a href="#accommodations">Accommodations</a></li>
       <li><a href="#registry">Registry</a></li>
     </ul>
+    <a href="#home" class="mobile-nav-monogram" id="mobileMonogram"><span>F</span></a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- Mobile slide-out menu -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home">Home</a>
+    <a href="#rsvp">RSVP</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#accommodations">Accommodations</a>
+    <a href="#registry">Registry</a>
+  </div>
 
   <!-- Home / Hero -->
   <section id="home">
@@ -675,6 +820,23 @@
         btn.textContent = 'Submit RSVP';
         btn.disabled = false;
       }
+    });
+
+    // ── Mobile menu ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    function toggleMenu() {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+      mobileOverlay.classList.toggle('open');
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+    mobileOverlay.addEventListener('click', toggleMenu);
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', toggleMenu);
     });
   </script>
 </body>
