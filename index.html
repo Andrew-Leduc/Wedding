@@ -44,8 +44,19 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 50px;
+      gap: 0;
       list-style: none;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .nav-links li {
+      flex: 1;
+      text-align: center;
+    }
+
+    .nav-links li:nth-child(3) {
+      flex: 0 0 auto;
     }
 
     .nav-links a {
@@ -163,13 +174,13 @@
       opacity: 1;
     }
 
-    /* ── Mobile nav monogram ── */
+    /* ── Mobile nav monogram (hidden on desktop) ── */
     .mobile-nav-monogram {
       width: 50px;
       height: 64px;
       background: #F5EFDC;
       border-radius: 50%;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       border: 1px solid #D4CDB8;
@@ -195,6 +206,10 @@
 
       .hamburger {
         display: block;
+      }
+
+      .mobile-nav-monogram {
+        display: flex;
       }
 
       .mobile-menu {
