@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wedding Celebration</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Pinyon+Script&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
+  <style>@import url('https://fonts.cdnfonts.com/css/parfumerie-script');</style>
   <style>
     @font-face {
       font-family: 'Le Jour Serif';
@@ -333,21 +335,32 @@
       color: #6A6A4A;
     }
 
+    #schedule .section-title {
+      font-family: 'Parfumerie Script', 'Pinyon Script', cursive;
+      font-size: 80px;
+      letter-spacing: 0;
+      text-transform: none;
+      margin-bottom: 10px;
+    }
+
     .timeline {
       display: flex;
       gap: 0;
       align-items: flex-start;
       width: 100%;
-      max-width: 700px;
+      max-width: 680px;
     }
 
+    /* Left and right text columns */
     .timeline-col {
       flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 0;
     }
+
+    .timeline-col-left { align-items: flex-end; }
+    .timeline-col-right { align-items: flex-start; }
 
     .timeline-col-date {
       font-family: 'Cormorant Garamond', serif;
@@ -355,44 +368,9 @@
       font-weight: 600;
       color: #5C6631;
       letter-spacing: 2px;
-      margin-bottom: 20px;
-    }
-
-    .timeline-divider {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 52px;
-    }
-
-    .timeline-divider-line {
-      width: 2px;
-      flex: 1;
-      background-color: #5C6631;
-    }
-
-    .timeline-item {
+      height: 48px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-      width: 100%;
-    }
-
-    .timeline-col:first-child .timeline-item {
-      justify-content: flex-end;
-    }
-
-    .timeline-col:last-child .timeline-item {
-      justify-content: flex-start;
-    }
-
-    .timeline-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #5C6631;
-      flex-shrink: 0;
     }
 
     .timeline-item-label {
@@ -401,6 +379,52 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       color: #5C6631;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    /* Center spine: line + dots */
+    .timeline-spine {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 24px;
+      flex-shrink: 0;
+    }
+
+    .timeline-spine-spacer {
+      height: 48px; /* matches date row height */
+    }
+
+    .timeline-spine-body {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .timeline-spine-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: #5C6631;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background-color: #5C6631;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      margin: 16.5px 0; /* centers in 44px row height */
     }
 
     /* ── RSVP ── */
@@ -763,36 +787,31 @@
     </div>
     <div class="timeline">
       <!-- Left column: 9.25.26 -->
-      <div class="timeline-col">
+      <div class="timeline-col timeline-col-left">
         <div class="timeline-col-date">9.25.26</div>
-        <div class="timeline-item">
-          <span class="timeline-item-label">Welcome Party</span>
+        <span class="timeline-item-label">Welcome Party</span>
+        <span class="timeline-item-label"></span>
+        <span class="timeline-item-label"></span>
+        <span class="timeline-item-label"></span>
+      </div>
+      <!-- Center spine -->
+      <div class="timeline-spine">
+        <div class="timeline-spine-spacer"></div>
+        <div class="timeline-spine-body">
+          <div class="timeline-spine-line"></div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-dot"></div>
           <div class="timeline-dot"></div>
         </div>
-      </div>
-      <!-- Center divider line -->
-      <div class="timeline-divider">
-        <div class="timeline-divider-line"></div>
       </div>
       <!-- Right column: 9.26.26 -->
-      <div class="timeline-col">
+      <div class="timeline-col timeline-col-right">
         <div class="timeline-col-date">9.26.26</div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <span class="timeline-item-label">Ceremony</span>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <span class="timeline-item-label">Cocktail Hour</span>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <span class="timeline-item-label">Reception</span>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <span class="timeline-item-label">After Party</span>
-        </div>
+        <span class="timeline-item-label">Ceremony</span>
+        <span class="timeline-item-label">Cocktail Hour</span>
+        <span class="timeline-item-label">Reception</span>
+        <span class="timeline-item-label">After Party</span>
       </div>
     </div>
   </section>
