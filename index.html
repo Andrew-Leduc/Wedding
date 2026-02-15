@@ -926,6 +926,7 @@
       if (gateInput.value.trim().toLowerCase() === SITE_PASSWORD) {
         sessionStorage.setItem('wedding_auth', 'true');
         gate.classList.add('hidden');
+        window.scrollTo(0, 0);
       } else {
         gateError.textContent = 'Incorrect password. Please try again.';
         gateInput.value = '';
