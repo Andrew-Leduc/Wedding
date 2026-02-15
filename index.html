@@ -313,35 +313,94 @@
       background-color: #F3EEDE;
     }
 
+    .schedule-venue {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .schedule-venue h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: #5C6631;
+      margin-bottom: 6px;
+    }
+
+    .schedule-venue p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      color: #6A6A4A;
+    }
+
     .timeline {
       display: flex;
-      flex-direction: column;
-      gap: 40px;
-      max-width: 500px;
+      gap: 0;
+      align-items: flex-start;
       width: 100%;
+      max-width: 700px;
+    }
+
+    .timeline-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .timeline-col-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #5C6631;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    .timeline-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 52px;
+    }
+
+    .timeline-divider-line {
+      width: 2px;
+      flex: 1;
+      background-color: #5C6631;
     }
 
     .timeline-item {
-      text-align: center;
-      padding: 30px;
-      border: 1px solid #D4CDB8;
-      background: #FAF6ED;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      width: 100%;
     }
 
-    .timeline-item h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 600;
-      font-size: 22px;
-      color: #5C6631;
-      margin-bottom: 8px;
+    .timeline-col:first-child .timeline-item {
+      justify-content: flex-end;
+    }
+
+    .timeline-col:last-child .timeline-item {
+      justify-content: flex-start;
+    }
+
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #5C6631;
+      flex-shrink: 0;
+    }
+
+    .timeline-item-label {
+      font-family: 'Le Jour Serif', 'Cormorant Garamond', serif;
+      font-size: 15px;
       letter-spacing: 2px;
       text-transform: uppercase;
-    }
-
-    .timeline-item p {
-      font-size: 17px;
-      color: #6A6A4A;
-      line-height: 1.6;
+      color: #5C6631;
     }
 
     /* ── RSVP ── */
@@ -698,18 +757,42 @@
   <!-- Schedule -->
   <section id="schedule">
     <div class="section-title">Schedule</div>
+    <div class="schedule-venue">
+      <h3>Willow Hill</h3>
+      <p>459 Wolf Den Rd, Brooklyn, CT 06234</p>
+    </div>
     <div class="timeline">
-      <div class="timeline-item">
-        <h3>Ceremony</h3>
-        <p>4:00 PM<br>Venue Name<br>123 Street, City, State</p>
+      <!-- Left column: 9.25.26 -->
+      <div class="timeline-col">
+        <div class="timeline-col-date">9.25.26</div>
+        <div class="timeline-item">
+          <span class="timeline-item-label">Welcome Party</span>
+          <div class="timeline-dot"></div>
+        </div>
       </div>
-      <div class="timeline-item">
-        <h3>Cocktail Hour</h3>
-        <p>5:00 PM<br>Garden Terrace</p>
+      <!-- Center divider line -->
+      <div class="timeline-divider">
+        <div class="timeline-divider-line"></div>
       </div>
-      <div class="timeline-item">
-        <h3>Reception</h3>
-        <p>6:00 PM<br>Grand Ballroom</p>
+      <!-- Right column: 9.26.26 -->
+      <div class="timeline-col">
+        <div class="timeline-col-date">9.26.26</div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <span class="timeline-item-label">Ceremony</span>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <span class="timeline-item-label">Cocktail Hour</span>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <span class="timeline-item-label">Reception</span>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <span class="timeline-item-label">After Party</span>
+        </div>
       </div>
     </div>
   </section>
