@@ -7,6 +7,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Pinyon+Script&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <style>
     @font-face {
+      font-family: 'Baskerville Display PT';
+      src: url('baskerville-display-pt.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    @font-face {
       font-family: 'Parfumerie Script';
       src: url('parfumerie-script-regular.otf') format('opentype');
       font-weight: 400;
@@ -430,25 +437,27 @@
 
     .schedule-attire {
       display: flex;
-      justify-content: space-between;
       width: 100%;
       max-width: 680px;
-      margin-top: 30px;
+      margin-top: 16px;
       font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
       font-size: 16px;
       color: #6A6A4A;
     }
 
     .schedule-attire .attire-left {
-      text-align: right;
       flex: 1;
-      padding-right: 40px;
+      text-align: right;
+    }
+
+    .schedule-attire .attire-spine {
+      width: 24px;
+      flex-shrink: 0;
     }
 
     .schedule-attire .attire-right {
-      text-align: left;
       flex: 1;
-      padding-left: 40px;
+      text-align: left;
     }
 
     .schedule-details {
@@ -904,6 +913,7 @@
     </div>
     <div class="schedule-attire">
       <span class="attire-left"><strong>Attire:</strong> Tuscan Chic</span>
+      <span class="attire-spine"></span>
       <span class="attire-right"><strong>Attire:</strong> Formal (Black Tie Optional)</span>
     </div>
     <div class="schedule-details">Details to follow</div>
