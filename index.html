@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wedding Celebration</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Pinyon+Script&family=Pinyon+Script&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Pinyon+Script&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <style>
     @font-face {
       font-family: 'Parfumerie Script';
@@ -327,7 +326,7 @@
     }
 
     .schedule-venue h3 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
       font-size: 22px;
       font-weight: 500;
       color: #5C6631;
@@ -335,7 +334,7 @@
     }
 
     .schedule-venue p {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
       font-size: 17px;
       font-style: italic;
       color: #6A6A4A;
@@ -373,7 +372,7 @@
     .timeline-col-right { align-items: flex-start; }
 
     .timeline-col-date {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
       font-size: 22px;
       font-weight: 600;
       color: #5C6631;
@@ -418,35 +417,43 @@
 
     .schedule-venue a {
       color: inherit;
-      text-decoration: none;
-      padding: 2px 6px;
-      border: 1px solid #5C6631;
+      text-decoration: underline;
       transition: background 0.2s, color 0.2s;
+      padding: 2px 4px;
     }
 
     .schedule-venue a:hover {
       background-color: #5C6631;
       color: #FAF6ED;
+      text-decoration: none;
     }
 
     .schedule-attire {
       display: flex;
-      gap: 80px;
-      justify-content: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 680px;
       margin-top: 30px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 15px;
-      font-style: italic;
+      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
+      font-size: 16px;
       color: #6A6A4A;
     }
 
-    .schedule-attire span {
-      text-align: center;
+    .schedule-attire .attire-left {
+      text-align: right;
+      flex: 1;
+      padding-right: 40px;
+    }
+
+    .schedule-attire .attire-right {
+      text-align: left;
+      flex: 1;
+      padding-left: 40px;
     }
 
     .schedule-details {
-      margin-top: 20px;
-      font-family: 'Cormorant Garamond', serif;
+      margin-top: 16px;
+      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
       font-size: 16px;
       font-style: italic;
       color: #8B8B6A;
@@ -896,8 +903,8 @@
       </div>
     </div>
     <div class="schedule-attire">
-      <span>Attire: Tuscan Chic</span>
-      <span>Attire: Formal (Black Tie Optional)</span>
+      <span class="attire-left"><strong>Attire:</strong> Tuscan Chic</span>
+      <span class="attire-right"><strong>Attire:</strong> Formal (Black Tie Optional)</span>
     </div>
     <div class="schedule-details">Details to follow</div>
   </section>
