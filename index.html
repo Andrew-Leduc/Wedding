@@ -448,6 +448,19 @@
       text-align: center;
     }
 
+    .rsvp-event-group {
+      margin-bottom: 12px;
+    }
+
+    .rsvp-event-label {
+      font-family: 'Le Jour Serif', 'Cormorant Garamond', serif;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #8B8B6A;
+      margin-bottom: 6px;
+    }
+
     .rsvp-container p {
       font-size: 17px;
       color: #6A6A4A;
@@ -858,12 +871,25 @@
           <input type="text" id="guestName" placeholder="Start typing your name..." required autocomplete="off">
           <div class="autocomplete-list" id="autocompleteList"></div>
         </div>
-        <div class="select-wrapper">
-          <select id="rsvpResponse" required>
-            <option value="" disabled selected>Will you attend?</option>
-            <option value="YES">Joyfully Accepts</option>
-            <option value="NO">Respectfully Declines</option>
-          </select>
+        <div class="rsvp-event-group">
+          <div class="rsvp-event-label">Welcome Party — 9.25.26</div>
+          <div class="select-wrapper">
+            <select id="rsvpWelcome" required>
+              <option value="" disabled selected>Will you attend?</option>
+              <option value="YES">Joyfully Accepts</option>
+              <option value="NO">Respectfully Declines</option>
+            </select>
+          </div>
+        </div>
+        <div class="rsvp-event-group">
+          <div class="rsvp-event-label">Wedding — 9.26.26</div>
+          <div class="select-wrapper">
+            <select id="rsvpWedding" required>
+              <option value="" disabled selected>Will you attend?</option>
+              <option value="YES">Joyfully Accepts</option>
+              <option value="NO">Respectfully Declines</option>
+            </select>
+          </div>
         </div>
         <div class="partner-rsvp" id="partnerRsvp">
           <label>
@@ -871,12 +897,25 @@
             Also RSVP for <strong id="partnerNameLabel"></strong>?
           </label>
           <div class="partner-response" id="partnerResponse">
-            <div class="select-wrapper">
-              <select id="partnerRsvpResponse">
-                <option value="" disabled selected>Will they attend?</option>
-                <option value="YES">Joyfully Accepts</option>
-                <option value="NO">Respectfully Declines</option>
-              </select>
+            <div class="rsvp-event-group">
+              <div class="rsvp-event-label">Welcome Party — 9.25.26</div>
+              <div class="select-wrapper">
+                <select id="partnerRsvpWelcome">
+                  <option value="" disabled selected>Will they attend?</option>
+                  <option value="YES">Joyfully Accepts</option>
+                  <option value="NO">Respectfully Declines</option>
+                </select>
+              </div>
+            </div>
+            <div class="rsvp-event-group">
+              <div class="rsvp-event-label">Wedding — 9.26.26</div>
+              <div class="select-wrapper">
+                <select id="partnerRsvpWedding">
+                  <option value="" disabled selected>Will they attend?</option>
+                  <option value="YES">Joyfully Accepts</option>
+                  <option value="NO">Respectfully Declines</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -957,7 +996,7 @@
         const rows = csv.trim().split('\n').slice(1);
         guests = rows.map(row => {
           const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
-          return { name: cols[0] || '', partner: cols[2] || '' };
+          return { name: cols[0] || '', partner: cols[3] || '' };
         }).filter(g => g.name);
       } catch (err) {
         guests = [];
@@ -1020,37 +1059,43 @@
 
     partnerCheck.addEventListener('change', function() {
       partnerResponse.style.display = this.checked ? 'block' : 'none';
-      if (!this.checked) document.getElementById('partnerRsvpResponse').selectedIndex = 0;
+      if (!this.checked) {
+        document.getElementById('partnerRsvpWelcome').selectedIndex = 0;
+        document.getElementById('partnerRsvpWedding').selectedIndex = 0;
+      }
     });
 
     // ── Submit ──
     document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const name = document.getElementById('guestName').value.trim();
-      const response = document.getElementById('rsvpResponse').value;
+      const rsvpWelcome = document.getElementById('rsvpWelcome').value;
+      const rsvpWedding = document.getElementById('rsvpWedding').value;
       const msg = document.getElementById('rsvpMessage');
       const btn = this.querySelector('button');
 
-      if (!name || !response) {
-        msg.textContent = 'Please enter your name and select a response.';
+      if (!name || !rsvpWelcome || !rsvpWedding) {
+        msg.textContent = 'Please enter your name and select a response for both events.';
         return;
       }
 
       btn.textContent = 'Sending...';
       btn.disabled = true;
 
-      const payload = { name, rsvp: response };
+      const payload = { name, rsvp_welcome: rsvpWelcome, rsvp_wedding: rsvpWedding };
 
       if (partnerCheck.checked && selectedGuest && selectedGuest.partner) {
-        const pResponse = document.getElementById('partnerRsvpResponse').value;
-        if (!pResponse) {
-          msg.textContent = 'Please select a response for your partner.';
+        const pWelcome = document.getElementById('partnerRsvpWelcome').value;
+        const pWedding = document.getElementById('partnerRsvpWedding').value;
+        if (!pWelcome || !pWedding) {
+          msg.textContent = 'Please select responses for both events for your partner.';
           btn.textContent = 'Submit RSVP';
           btn.disabled = false;
           return;
         }
         payload.partnerName = selectedGuest.partner;
-        payload.partnerRsvp = pResponse;
+        payload.partnerRsvpWelcome = pWelcome;
+        payload.partnerRsvpWedding = pWedding;
       }
 
       try {
@@ -1060,11 +1105,11 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        let thankYou = response === 'YES'
+        let thankYou = (rsvpWelcome === 'YES' || rsvpWedding === 'YES')
           ? `Thank you, ${name}! We can't wait to celebrate with you.`
           : `Thank you, ${name}. We'll miss you!`;
         if (payload.partnerName) {
-          thankYou += payload.partnerRsvp === 'YES'
+          thankYou += (payload.partnerRsvpWelcome === 'YES' || payload.partnerRsvpWedding === 'YES')
             ? ` ${payload.partnerName}'s RSVP has been recorded too!`
             : ` We've noted ${payload.partnerName}'s response as well.`;
         }
