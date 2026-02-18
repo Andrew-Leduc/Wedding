@@ -416,11 +416,48 @@
       flex: 1;
     }
 
+    .schedule-venue a {
+      color: inherit;
+      text-decoration: none;
+      padding: 2px 6px;
+      border: 1px solid #5C6631;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .schedule-venue a:hover {
+      background-color: #5C6631;
+      color: #FAF6ED;
+    }
+
+    .schedule-attire {
+      display: flex;
+      gap: 80px;
+      justify-content: center;
+      margin-top: 30px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: #6A6A4A;
+    }
+
+    .schedule-attire span {
+      text-align: center;
+    }
+
+    .schedule-details {
+      margin-top: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: #8B8B6A;
+      text-align: center;
+    }
+
     .timeline-spine-line {
       position: absolute;
       top: 22px;
       bottom: 22px;
-      width: 2px;
+      width: 1px;
       background-color: #5C6631;
       left: 50%;
       transform: translateX(-50%);
@@ -827,7 +864,7 @@
     <div class="section-title">Schedule</div>
     <div class="schedule-venue">
       <h3>Willow Hill</h3>
-      <p><a href="https://www.google.com/maps/search/?api=1&query=459+Wolf+Den+Rd+Brooklyn+CT+06234" target="_blank" style="color:inherit;">459 Wolf Den Rd, Brooklyn, CT 06234</a></p>
+      <p><a href="https://www.google.com/maps/search/?api=1&query=459+Wolf+Den+Rd+Brooklyn+CT+06234" target="_blank">459 Wolf Den Rd, Brooklyn, CT 06234</a></p>
     </div>
     <div class="timeline">
       <!-- Left column: 9.25.26 -->
@@ -858,6 +895,11 @@
         <span class="timeline-item-label">After Party</span>
       </div>
     </div>
+    <div class="schedule-attire">
+      <span>Attire: Tuscan Chic</span>
+      <span>Attire: Formal (Black Tie Optional)</span>
+    </div>
+    <div class="schedule-details">Details to follow</div>
   </section>
 
   <!-- RSVP -->
