@@ -1350,6 +1350,7 @@
       members.forEach((memberName, idx) => {
         const div = document.createElement('div');
         div.className = 'partner-rsvp';
+        div.style.display = 'block';
         div.innerHTML = `
           <label>
             <input type="checkbox" id="householdCheck_${idx}">
