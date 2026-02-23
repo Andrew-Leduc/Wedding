@@ -1250,19 +1250,39 @@
     // Guest data: [{name, partner, household}]
     let guests = [];
 
+    function parseCSV(csv) {
+      const rows = [];
+      const lines = csv.trim().split(/\r?\n/);
+      for (const line of lines) {
+        const cols = [];
+        let cur = '', inQ = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+            else inQ = !inQ;
+          } else if (ch === ',' && !inQ) {
+            cols.push(cur.trim()); cur = '';
+          } else {
+            cur += ch;
+          }
+        }
+        cols.push(cur.trim());
+        rows.push(cols);
+      }
+      return rows;
+    }
+
     async function loadGuests() {
       try {
         const res = await fetch(SHEET_CSV_URL);
         const csv = await res.text();
-        const rows = csv.trim().split('\n').slice(1);
-        guests = rows.map(row => {
-          const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
-          return {
-            name: cols[0] || '',
-            partner: cols[3] || '',
-            household: [cols[4]||'', cols[5]||'', cols[6]||''].filter(Boolean)
-          };
-        }).filter(g => g.name);
+        const rows = parseCSV(csv).slice(1);
+        guests = rows.map(cols => ({
+          name: cols[0] || '',
+          partner: cols[3] || '',
+          household: [cols[4]||'', cols[5]||'', cols[6]||''].filter(Boolean)
+        })).filter(g => g.name);
       } catch (err) {
         guests = [];
       }
