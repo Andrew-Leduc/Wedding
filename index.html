@@ -1106,6 +1106,7 @@
             </div>
           </div>
         </div>
+        <div id="householdRsvps"></div>
         <button type="submit" class="rsvp-btn">Submit RSVP</button>
       </form>
       <div class="rsvp-message" id="rsvpMessage"></div>
@@ -1246,7 +1247,7 @@
     const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyXcU_0LMKDvNoWo2xEUzjCs9AXhOX_4GuEEAFsaDw92cj3zvCQJ76OxNotOgcc50EVQ/exec';
 
-    // Guest data: [{name, partner}]
+    // Guest data: [{name, partner, household}]
     let guests = [];
 
     async function loadGuests() {
@@ -1256,7 +1257,11 @@
         const rows = csv.trim().split('\n').slice(1);
         guests = rows.map(row => {
           const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
-          return { name: cols[0] || '', partner: cols[3] || '' };
+          return {
+            name: cols[0] || '',
+            partner: cols[3] || '',
+            household: [cols[4]||'', cols[5]||'', cols[6]||''].filter(Boolean)
+          };
         }).filter(g => g.name);
       } catch (err) {
         guests = [];
@@ -1274,6 +1279,7 @@
       const val = this.value.trim().toLowerCase();
       selectedGuest = null;
       hidePartner();
+      hideHousehold();
       list.innerHTML = '';
 
       if (val.length < 2) { list.style.display = 'none'; return; }
@@ -1290,6 +1296,7 @@
           selectedGuest = g;
           list.style.display = 'none';
           if (g.partner) showPartner(g.partner);
+          if (g.household && g.household.length) showHousehold(g.household);
         });
         list.appendChild(div);
       });
@@ -1315,6 +1322,55 @@
       partnerRsvpEl.style.display = 'none';
       partnerCheck.checked = false;
       partnerResponse.style.display = 'none';
+    }
+
+    function showHousehold(members) {
+      const container = document.getElementById('householdRsvps');
+      container.innerHTML = '';
+      members.forEach((memberName, idx) => {
+        const div = document.createElement('div');
+        div.className = 'partner-rsvp';
+        div.innerHTML = `
+          <label>
+            <input type="checkbox" id="householdCheck_${idx}">
+            Also RSVP for <strong>${memberName}</strong>?
+          </label>
+          <div class="partner-response" id="householdResponse_${idx}" style="display:none;">
+            <div class="rsvp-event-group">
+              <div class="rsvp-event-label">Welcome Party — 9.25.26</div>
+              <div class="select-wrapper">
+                <select id="householdWelcome_${idx}">
+                  <option value="" disabled selected>Will they attend?</option>
+                  <option value="YES">Joyfully Accepts</option>
+                  <option value="NO">Respectfully Declines</option>
+                </select>
+              </div>
+            </div>
+            <div class="rsvp-event-group">
+              <div class="rsvp-event-label">Wedding — 9.26.26</div>
+              <div class="select-wrapper">
+                <select id="householdWedding_${idx}">
+                  <option value="" disabled selected>Will they attend?</option>
+                  <option value="YES">Joyfully Accepts</option>
+                  <option value="NO">Respectfully Declines</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+        div.querySelector(`#householdCheck_${idx}`).addEventListener('change', function() {
+          div.querySelector(`#householdResponse_${idx}`).style.display = this.checked ? 'block' : 'none';
+          if (!this.checked) {
+            div.querySelector(`#householdWelcome_${idx}`).selectedIndex = 0;
+            div.querySelector(`#householdWedding_${idx}`).selectedIndex = 0;
+          }
+        });
+        container.appendChild(div);
+      });
+    }
+
+    function hideHousehold() {
+      document.getElementById('householdRsvps').innerHTML = '';
     }
 
     partnerCheck.addEventListener('change', function() {
@@ -1358,6 +1414,28 @@
         payload.partnerRsvpWedding = pWedding;
       }
 
+      const householdMembers = [];
+      let householdValid = true;
+      if (selectedGuest && selectedGuest.household) {
+        selectedGuest.household.forEach((memberName, idx) => {
+          const check = document.getElementById(`householdCheck_${idx}`);
+          if (check && check.checked) {
+            const hWelcome = document.getElementById(`householdWelcome_${idx}`).value;
+            const hWedding = document.getElementById(`householdWedding_${idx}`).value;
+            if (!hWelcome || !hWedding) {
+              msg.textContent = `Please select responses for both events for ${memberName}.`;
+              btn.textContent = 'Submit RSVP';
+              btn.disabled = false;
+              householdValid = false;
+            } else {
+              householdMembers.push({ name: memberName, rsvp_welcome: hWelcome, rsvp_wedding: hWedding });
+            }
+          }
+        });
+      }
+      if (!householdValid) return;
+      if (householdMembers.length) payload.householdMembers = householdMembers;
+
       try {
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
@@ -1373,12 +1451,20 @@
             ? ` ${payload.partnerName}'s RSVP has been recorded too!`
             : ` We've noted ${payload.partnerName}'s response as well.`;
         }
+        if (payload.householdMembers) {
+          payload.householdMembers.forEach(m => {
+            thankYou += (m.rsvp_welcome === 'YES' || m.rsvp_wedding === 'YES')
+              ? ` ${m.name}'s RSVP has been recorded too!`
+              : ` We've noted ${m.name}'s response as well.`;
+          });
+        }
         msg.textContent = thankYou;
         document.getElementById('guestName').value = '';
         document.getElementById('rsvpWelcome').selectedIndex = 0;
         document.getElementById('rsvpWedding').selectedIndex = 0;
         selectedGuest = null;
         hidePartner();
+        hideHousehold();
       } catch (err) {
         msg.textContent = 'Something went wrong. Please try again.';
       } finally {
