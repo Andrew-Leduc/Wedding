@@ -676,6 +676,22 @@
       min-height: 24px;
     }
 
+    /* ── Wedding detail fields (entrée, allergies, stay, shuttle, song) ── */
+    .wedding-details-wrap {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+      padding-top: 18px;
+      margin-top: 4px;
+      border-top: 1px solid #E4DDC8;
+      text-align: left;
+    }
+
+    .wedding-details-wrap .rsvp-event-group {
+      margin-bottom: 0;
+    }
+
     /* ── Password Gate ── */
     .password-gate {
       position: fixed;
@@ -1078,6 +1094,7 @@
             </select>
           </div>
         </div>
+        <div class="wedding-details-wrap" id="guestWeddingDetails"></div>
         <div class="partner-rsvp" id="partnerRsvp">
           <label>
             <input type="checkbox" id="partnerCheck">
@@ -1104,6 +1121,7 @@
                 </select>
               </div>
             </div>
+            <div class="wedding-details-wrap" id="partnerWeddingDetails"></div>
           </div>
         </div>
         <div id="householdRsvps"></div>
@@ -1247,7 +1265,7 @@
 
     const SHEET_ID = '1F3D7djrxzRBC4pA-pG9UuoNh-UTifmVJgDCXpOAdve0';
     const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKCOnvqbqDK_9IrhjVkyG70PAyVkzmc71AMKx0_AY50f3Qxoc9Fm5aVCcX7U3MmUXhJg/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfsiU3phIjIbeuBPbyI8B_y9lu3_1Ab4o6MJ0kkzBglIdBju41yA79-VzlADrmYVTS/exec';
 
     // Guest data: [{name, partner, household}]
     let guests = [];
@@ -1283,7 +1301,7 @@
         guests = rows.map(cols => ({
           name: cols[0] || '',
           partner: cols[3] || '',
-          household: [cols[4]||'', cols[5]||'', cols[6]||''].filter(Boolean)
+          household: [cols[4]||'', cols[5]||''].filter(Boolean)
         })).filter(g => g.name);
       } catch (err) {
         guests = [];
@@ -1291,6 +1309,106 @@
     }
 
     loadGuests();
+
+    // ── Wedding detail fields (shown per-person when attending the wedding) ──
+    function weddingDetailsHTML(prefix) {
+      return `
+        <div class="rsvp-event-group">
+          <div class="rsvp-event-label">Entrée</div>
+          <div class="select-wrapper">
+            <select id="${prefix}Entree">
+              <option value="" disabled selected>Choose an entrée</option>
+              <option value="Beef">Beef</option>
+              <option value="Fish">Fish</option>
+              <option value="Vegetarian">Vegetarian</option>
+            </select>
+          </div>
+        </div>
+        <div class="rsvp-event-group">
+          <div class="rsvp-event-label">Allergies / Dietary Restrictions</div>
+          <input type="text" id="${prefix}Allergies" placeholder="e.g. nut allergy, gluten-free (optional)" autocomplete="off">
+        </div>
+        <div class="rsvp-event-group">
+          <div class="rsvp-event-label">Where are you staying?</div>
+          <div class="select-wrapper">
+            <select id="${prefix}Accommodations">
+              <option value="" disabled selected>Select accommodations</option>
+              <option value="The Inn at Woodstock Hill">The Inn at Woodstock Hill</option>
+              <option value="La Quinta Plainfield">La Quinta Plainfield</option>
+              <option value="Other (AirBnB / rental)">Other (AirBnB / rental)</option>
+              <option value="Not staying overnight">Not staying overnight</option>
+            </select>
+          </div>
+        </div>
+        <div class="rsvp-event-group">
+          <div class="rsvp-event-label">Getting to the Venue</div>
+          <div class="select-wrapper">
+            <select id="${prefix}Shuttle">
+              <option value="" disabled selected>Shuttle or driving?</option>
+              <option value="Shuttle">I'll take the shuttle</option>
+              <option value="Driving">I'll drive myself</option>
+            </select>
+          </div>
+        </div>
+        <div class="rsvp-event-group">
+          <div class="rsvp-event-label">Song Request</div>
+          <input type="text" id="${prefix}Song" placeholder="A song to get you on the dance floor (optional)" autocomplete="off">
+        </div>
+      `;
+    }
+
+    function resetDetails(container) {
+      if (!container) return;
+      container.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+      container.querySelectorAll('input[type="text"]').forEach(t => t.value = '');
+    }
+
+    // Show detail fields when the given wedding select is set to "YES".
+    function bindWeddingToggle(weddingSelectId, containerId) {
+      const sel = document.getElementById(weddingSelectId);
+      const cont = document.getElementById(containerId);
+      if (!sel || !cont) return;
+      sel.addEventListener('change', function() {
+        const show = this.value === 'YES';
+        cont.style.display = show ? 'flex' : 'none';
+        if (!show) resetDetails(cont);
+      });
+    }
+
+    function valOf(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : '';
+    }
+
+    // Collect + validate one person's response. Returns { person } or { error }.
+    function collectPerson(prefix, name, welcomeVal, weddingVal) {
+      const person = {
+        name: name,
+        rsvp_welcome: welcomeVal,
+        rsvp_wedding: weddingVal,
+        entree: '', allergies: '', accommodations: '', shuttle: '', song: ''
+      };
+      if (weddingVal === 'YES') {
+        const entree = valOf(prefix + 'Entree');
+        const accommodations = valOf(prefix + 'Accommodations');
+        const shuttle = valOf(prefix + 'Shuttle');
+        if (!entree || !accommodations || !shuttle) {
+          return { error: `Please choose an entrée, accommodations, and shuttle option for ${name}.` };
+        }
+        person.entree = entree;
+        person.accommodations = accommodations;
+        person.shuttle = shuttle;
+        person.allergies = valOf(prefix + 'Allergies').trim();
+        person.song = valOf(prefix + 'Song').trim();
+      }
+      return { person: person };
+    }
+
+    // Populate the static guest + partner detail blocks and wire their toggles.
+    document.getElementById('guestWeddingDetails').innerHTML = weddingDetailsHTML('guest');
+    document.getElementById('partnerWeddingDetails').innerHTML = weddingDetailsHTML('partner');
+    bindWeddingToggle('rsvpWedding', 'guestWeddingDetails');
+    bindWeddingToggle('partnerRsvpWedding', 'partnerWeddingDetails');
 
     // ── Autocomplete ──
     const nameInput = document.getElementById('guestName');
@@ -1333,17 +1451,25 @@
     const partnerCheck = document.getElementById('partnerCheck');
     const partnerResponse = document.getElementById('partnerResponse');
 
+    function resetPartnerDetails() {
+      const cont = document.getElementById('partnerWeddingDetails');
+      cont.style.display = 'none';
+      resetDetails(cont);
+    }
+
     function showPartner(partnerName) {
       partnerLabel.textContent = partnerName;
       partnerRsvpEl.style.display = 'block';
       partnerCheck.checked = false;
       partnerResponse.style.display = 'none';
+      resetPartnerDetails();
     }
 
     function hidePartner() {
       partnerRsvpEl.style.display = 'none';
       partnerCheck.checked = false;
       partnerResponse.style.display = 'none';
+      resetPartnerDetails();
     }
 
     function showHousehold(members) {
@@ -1379,6 +1505,7 @@
                 </select>
               </div>
             </div>
+            <div class="wedding-details-wrap" id="household${idx}_Details">${weddingDetailsHTML(`household${idx}_`)}</div>
           </div>
         `;
         div.querySelector(`#householdCheck_${idx}`).addEventListener('change', function() {
@@ -1386,7 +1513,16 @@
           if (!this.checked) {
             div.querySelector(`#householdWelcome_${idx}`).selectedIndex = 0;
             div.querySelector(`#householdWedding_${idx}`).selectedIndex = 0;
+            const details = div.querySelector(`#household${idx}_Details`);
+            details.style.display = 'none';
+            resetDetails(details);
           }
+        });
+        div.querySelector(`#householdWedding_${idx}`).addEventListener('change', function() {
+          const details = div.querySelector(`#household${idx}_Details`);
+          const show = this.value === 'YES';
+          details.style.display = show ? 'flex' : 'none';
+          if (!show) resetDetails(details);
         });
         container.appendChild(div);
       });
@@ -1401,6 +1537,7 @@
       if (!this.checked) {
         document.getElementById('partnerRsvpWelcome').selectedIndex = 0;
         document.getElementById('partnerRsvpWedding').selectedIndex = 0;
+        resetPartnerDetails();
       }
     });
 
@@ -1418,73 +1555,71 @@
         return;
       }
 
-      btn.textContent = 'Sending...';
-      btn.disabled = true;
+      const people = [];
 
-      const payload = { name, rsvp_welcome: rsvpWelcome, rsvp_wedding: rsvpWedding };
+      // Main guest
+      const guestResult = collectPerson('guest', name, rsvpWelcome, rsvpWedding);
+      if (guestResult.error) { msg.textContent = guestResult.error; return; }
+      people.push(guestResult.person);
 
+      // Partner
       if (partnerCheck.checked && selectedGuest && selectedGuest.partner) {
         const pWelcome = document.getElementById('partnerRsvpWelcome').value;
         const pWedding = document.getElementById('partnerRsvpWedding').value;
         if (!pWelcome || !pWedding) {
           msg.textContent = 'Please select responses for both events for your partner.';
-          btn.textContent = 'Submit RSVP';
-          btn.disabled = false;
           return;
         }
-        payload.partnerName = selectedGuest.partner;
-        payload.partnerRsvpWelcome = pWelcome;
-        payload.partnerRsvpWedding = pWedding;
+        const partnerResult = collectPerson('partner', selectedGuest.partner, pWelcome, pWedding);
+        if (partnerResult.error) { msg.textContent = partnerResult.error; return; }
+        people.push(partnerResult.person);
       }
 
-      const householdMembers = [];
-      let householdValid = true;
+      // Household members
       if (selectedGuest && selectedGuest.household) {
-        selectedGuest.household.forEach((memberName, idx) => {
+        for (let idx = 0; idx < selectedGuest.household.length; idx++) {
+          const memberName = selectedGuest.household[idx];
           const check = document.getElementById(`householdCheck_${idx}`);
           if (check && check.checked) {
             const hWelcome = document.getElementById(`householdWelcome_${idx}`).value;
             const hWedding = document.getElementById(`householdWedding_${idx}`).value;
             if (!hWelcome || !hWedding) {
               msg.textContent = `Please select responses for both events for ${memberName}.`;
-              btn.textContent = 'Submit RSVP';
-              btn.disabled = false;
-              householdValid = false;
-            } else {
-              householdMembers.push({ name: memberName, rsvp_welcome: hWelcome, rsvp_wedding: hWedding });
+              return;
             }
+            const hResult = collectPerson(`household${idx}_`, memberName, hWelcome, hWedding);
+            if (hResult.error) { msg.textContent = hResult.error; return; }
+            people.push(hResult.person);
           }
-        });
+        }
       }
-      if (!householdValid) return;
-      if (householdMembers.length) payload.householdMembers = householdMembers;
+
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
 
       try {
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ people })
         });
-        let thankYou = (rsvpWelcome === 'YES' || rsvpWedding === 'YES')
+        const attending = p => p.rsvp_welcome === 'YES' || p.rsvp_wedding === 'YES';
+        let thankYou = attending(people[0])
           ? `Thank you, ${name}! We can't wait to celebrate with you.`
           : `Thank you, ${name}. We'll miss you!`;
-        if (payload.partnerName) {
-          thankYou += (payload.partnerRsvpWelcome === 'YES' || payload.partnerRsvpWedding === 'YES')
-            ? ` ${payload.partnerName}'s RSVP has been recorded too!`
-            : ` We've noted ${payload.partnerName}'s response as well.`;
-        }
-        if (payload.householdMembers) {
-          payload.householdMembers.forEach(m => {
-            thankYou += (m.rsvp_welcome === 'YES' || m.rsvp_wedding === 'YES')
-              ? ` ${m.name}'s RSVP has been recorded too!`
-              : ` We've noted ${m.name}'s response as well.`;
-          });
-        }
+        people.slice(1).forEach(p => {
+          thankYou += attending(p)
+            ? ` ${p.name}'s RSVP has been recorded too!`
+            : ` We've noted ${p.name}'s response as well.`;
+        });
         msg.textContent = thankYou;
         document.getElementById('guestName').value = '';
         document.getElementById('rsvpWelcome').selectedIndex = 0;
         document.getElementById('rsvpWedding').selectedIndex = 0;
+        const guestDetails = document.getElementById('guestWeddingDetails');
+        guestDetails.style.display = 'none';
+        resetDetails(guestDetails);
         selectedGuest = null;
         hidePartner();
         hideHousehold();
