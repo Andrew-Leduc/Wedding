@@ -394,7 +394,7 @@
       flex: 1 1 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: flex-end;
       text-align: right;
       padding-right: 40px;
@@ -452,6 +452,25 @@
       font-family: 'Libre Baskerville', 'Baskerville', serif;
       font-weight: 700;
       color: #5C6631;
+    }
+
+    .schedule-faq-note {
+      margin-top: 8px;
+      font-size: 15px;
+      font-style: italic;
+      color: #8B8B6A;
+    }
+
+    .schedule-faq-note a {
+      color: #5C6631;
+      text-decoration: underline;
+    }
+
+    .schedule-faq-note a:hover {
+      background-color: #5C6631;
+      color: #FAF6ED;
+      text-decoration: none;
+      padding: 1px 3px;
     }
 
     /* Wedding day: event names on the left, location/time on the right,
@@ -1115,7 +1134,11 @@
           <div class="wd-row wd-row-attire">
             <div class="wd-cell-left"></div>
             <div class="wd-divider"></div>
-            <div class="wd-cell-right event-attire"><strong>Attire: Formal (Black Tie Optional)</strong></div>
+            <div class="wd-cell-right event-attire">
+              <strong>Attire: Formal (Black Tie Optional)</strong><br>
+              Bring it!
+              <div class="schedule-faq-note">* For more information, please visit <a href="#faqs">FAQ's</a></div>
+            </div>
           </div>
         </div>
       </div>
