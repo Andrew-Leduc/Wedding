@@ -389,14 +389,15 @@
       align-items: stretch;
     }
 
+    /* Equal columns so the divider sits at the page center */
     .event-left {
-      flex: 0 0 36%;
+      flex: 1 1 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: flex-end;
       text-align: right;
-      padding-right: 36px;
+      padding-right: 40px;
     }
 
     .event-name {
@@ -411,7 +412,6 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 18px;
       color: #6A6A4A;
-      margin-top: 12px;
     }
 
     .event-divider {
@@ -421,9 +421,9 @@
     }
 
     .event-right {
-      flex: 1;
+      flex: 1 1 0;
       text-align: left;
-      padding-left: 36px;
+      padding-left: 40px;
       font-family: 'Cormorant Garamond', serif;
       font-size: 18px;
       color: #6A6A4A;
@@ -441,7 +441,11 @@
     .event-right .event-loc {
       font-weight: 600;
       color: #5C6631;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
+    }
+
+    .event-right .event-time {
+      margin-bottom: 16px;
     }
 
     .event-attire strong {
@@ -450,26 +454,51 @@
       color: #5C6631;
     }
 
-    /* Wedding-day sub-schedule */
-    .event-schedule {
-      margin-bottom: 18px;
+    /* Wedding day: event names on the left, location/time on the right,
+       aligned row by row around one continuous centered divider. */
+    .wd-rows {
+      width: 100%;
     }
 
-    .sched-row {
+    .wd-row {
       display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 5px 0;
+      align-items: stretch;
     }
 
-    .sched-name {
+    .wd-cell-left {
+      flex: 1 1 0;
+      text-align: right;
+      padding: 6px 40px 6px 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+    }
+
+    .wd-cell-right {
+      flex: 1 1 0;
+      text-align: left;
+      padding: 6px 0 6px 40px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: #6A6A4A;
+    }
+
+    .wd-cell-name {
       font-weight: 600;
       color: #5C6631;
-      white-space: nowrap;
     }
 
-    .sched-detail {
-      text-align: right;
+    .wd-divider {
+      width: 1px;
+      background-color: #5C6631;
+      flex-shrink: 0;
+    }
+
+    .wd-row-title .wd-cell-left {
+      padding-bottom: 16px;
+    }
+
+    .wd-row-attire .wd-cell-right {
+      padding-top: 18px;
     }
 
     @media (max-width: 768px) {
@@ -492,13 +521,18 @@
         padding-left: 0;
         text-align: center;
       }
-      .sched-row {
+      .wd-row {
         flex-direction: column;
-        gap: 2px;
-        text-align: center;
+        padding-bottom: 12px;
       }
-      .sched-name { white-space: normal; }
-      .sched-detail { text-align: center; }
+      .wd-divider { display: none; }
+      .wd-cell-left,
+      .wd-cell-right {
+        text-align: center;
+        padding: 2px 0;
+      }
+      .wd-row-title { padding-bottom: 4px; }
+      .wd-row-attire { padding-top: 6px; }
     }
 
     .schedule-venue a {
@@ -1029,15 +1063,15 @@
 
       <!-- Welcome Party -->
       <div class="schedule-event">
-        <div class="event-date">Friday, September 25, 2026</div>
+        <div class="event-date">9.25.26</div>
         <div class="event-body">
           <div class="event-left">
             <h3 class="event-name">Welcome Party</h3>
-            <div class="event-time">7:00 – 9:00 PM</div>
           </div>
           <div class="event-divider"></div>
           <div class="event-right">
             <p class="event-loc">The Barn</p>
+            <p class="event-time">7:00 – 9:00 PM</p>
             <p>Pizza, prosecco &amp; antipasti to kick off the weekend!</p>
             <p class="event-attire"><strong>Attire: Tuscan Chic</strong><br>Think breezy linens, fabulous florals, bold accessories… color highly encouraged. Make Nonna proud!</p>
           </div>
@@ -1046,21 +1080,42 @@
 
       <!-- Wedding Day -->
       <div class="schedule-event">
-        <div class="event-date">Saturday, September 26, 2026</div>
-        <div class="event-body">
-          <div class="event-left">
-            <h3 class="event-name">Wedding Day</h3>
+        <div class="event-date">9.26.26</div>
+        <div class="wd-rows">
+          <div class="wd-row wd-row-title">
+            <div class="wd-cell-left"><h3 class="event-name">Wedding Day</h3></div>
+            <div class="wd-divider"></div>
+            <div class="wd-cell-right"></div>
           </div>
-          <div class="event-divider"></div>
-          <div class="event-right">
-            <div class="event-schedule">
-              <div class="sched-row"><span class="sched-name">Sip &amp; Gather</span><span class="sched-detail">The Forest Cove · 4:00 PM</span></div>
-              <div class="sched-row"><span class="sched-name">Ceremony</span><span class="sched-detail">The Field · 4:30 PM</span></div>
-              <div class="sched-row"><span class="sched-name">Cocktail Hour</span><span class="sched-detail">The Forest Garden · 5:00–6:30 PM</span></div>
-              <div class="sched-row"><span class="sched-name">Reception</span><span class="sched-detail">The Meadow · 6:30–10:00 PM</span></div>
-              <div class="sched-row"><span class="sched-name">After Party</span><span class="sched-detail">The Barn · 10:00 PM – Midnight</span></div>
-            </div>
-            <p class="event-attire"><strong>Attire: Formal (Black Tie Optional)</strong></p>
+          <div class="wd-row">
+            <div class="wd-cell-left wd-cell-name">Sip &amp; Gather</div>
+            <div class="wd-divider"></div>
+            <div class="wd-cell-right">The Forest Cove · 4:00 PM</div>
+          </div>
+          <div class="wd-row">
+            <div class="wd-cell-left wd-cell-name">Ceremony</div>
+            <div class="wd-divider"></div>
+            <div class="wd-cell-right">The Field · 4:30 PM</div>
+          </div>
+          <div class="wd-row">
+            <div class="wd-cell-left wd-cell-name">Cocktail Hour</div>
+            <div class="wd-divider"></div>
+            <div class="wd-cell-right">The Forest Garden · 5:00–6:30 PM</div>
+          </div>
+          <div class="wd-row">
+            <div class="wd-cell-left wd-cell-name">Reception</div>
+            <div class="wd-divider"></div>
+            <div class="wd-cell-right">The Meadow · 6:30–10:00 PM</div>
+          </div>
+          <div class="wd-row">
+            <div class="wd-cell-left wd-cell-name">After Party</div>
+            <div class="wd-divider"></div>
+            <div class="wd-cell-right">The Barn · 10:00 PM – Midnight</div>
+          </div>
+          <div class="wd-row wd-row-attire">
+            <div class="wd-cell-left"></div>
+            <div class="wd-divider"></div>
+            <div class="wd-cell-right event-attire"><strong>Attire: Formal (Black Tie Optional)</strong></div>
           </div>
         </div>
       </div>
