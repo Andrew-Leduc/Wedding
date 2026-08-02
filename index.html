@@ -364,79 +364,141 @@
       margin-bottom: 10px;
     }
 
-    .timeline {
-      display: flex;
-      gap: 0;
-      align-items: flex-start;
+    /* Event blocks: centered date, event name left / details right */
+    .schedule-events {
       width: 100%;
-      max-width: 680px;
-    }
-
-    /* Left and right text columns */
-    .timeline-col {
-      flex: 1;
+      max-width: 780px;
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 60px;
     }
 
-    .timeline-col-left { align-items: flex-end; }
-    .timeline-col-right { align-items: flex-start; }
-
-    .timeline-col-date {
+    .event-date {
       font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
-      font-size: 22px;
-      font-weight: 600;
-      color: #5C6631;
-      letter-spacing: 2px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-    }
-
-    .timeline-item-label {
-      font-family: 'Le Jour Serif', 'Cormorant Garamond', serif;
-      font-size: 15px;
+      font-size: 24px;
+      font-weight: 400;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: #5C6631;
-      height: 44px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .event-body {
       display: flex;
-      align-items: center;
-      padding: 0;
+      align-items: stretch;
     }
 
-    .timeline-col-left .timeline-col-date,
-    .timeline-col-left .timeline-item-label {
-      padding-left: 16px;
-      padding-right: 24px;
-    }
-
-    .timeline-col-right .timeline-col-date,
-    .timeline-col-right .timeline-item-label {
-      padding-right: 16px;
-      padding-left: 24px;
-    }
-
-    /* Center spine: line + dots */
-    .timeline-spine {
+    .event-left {
+      flex: 0 0 36%;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      width: 24px;
+      justify-content: center;
+      align-items: flex-end;
+      text-align: right;
+      padding-right: 36px;
+    }
+
+    .event-name {
+      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
+      font-size: 30px;
+      font-weight: 400;
+      color: #5C6631;
+      line-height: 1.2;
+    }
+
+    .event-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: #6A6A4A;
+      margin-top: 12px;
+    }
+
+    .event-divider {
+      width: 1px;
+      background-color: #5C6631;
       flex-shrink: 0;
     }
 
-    .timeline-spine-spacer {
-      height: 48px; /* matches date row height */
+    .event-right {
+      flex: 1;
+      text-align: left;
+      padding-left: 36px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: #6A6A4A;
+      line-height: 1.6;
     }
 
-    .timeline-spine-body {
-      position: relative;
+    .event-right p {
+      margin-bottom: 14px;
+    }
+
+    .event-right p:last-child {
+      margin-bottom: 0;
+    }
+
+    .event-right .event-loc {
+      font-weight: 600;
+      color: #5C6631;
+      margin-bottom: 6px;
+    }
+
+    .event-attire strong {
+      font-family: 'Libre Baskerville', 'Baskerville', serif;
+      font-weight: 700;
+      color: #5C6631;
+    }
+
+    /* Wedding-day sub-schedule */
+    .event-schedule {
+      margin-bottom: 18px;
+    }
+
+    .sched-row {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 5px 0;
+    }
+
+    .sched-name {
+      font-weight: 600;
+      color: #5C6631;
+      white-space: nowrap;
+    }
+
+    .sched-detail {
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      .event-body {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .event-left {
+        align-items: center;
+        text-align: center;
+        padding-right: 0;
+        padding-bottom: 18px;
+      }
+      .event-divider {
+        width: 60px;
+        height: 1px;
+        margin: 0 auto 18px;
+      }
+      .event-right {
+        padding-left: 0;
+        text-align: center;
+      }
+      .sched-row {
+        flex-direction: column;
+        gap: 2px;
+        text-align: center;
+      }
+      .sched-name { white-space: normal; }
+      .sched-detail { text-align: center; }
     }
 
     .schedule-venue a {
@@ -452,69 +514,6 @@
       text-decoration: none;
     }
 
-    .schedule-attire {
-      display: flex;
-      width: 100%;
-      max-width: 680px;
-      margin-top: 16px;
-      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
-      font-size: 16px;
-      color: #6A6A4A;
-    }
-
-    .schedule-attire .attire-left {
-      flex: 1;
-      text-align: right;
-      font-weight: 400;
-      padding-right: 24px;
-    }
-
-    .schedule-attire strong {
-      font-family: 'Libre Baskerville', 'Baskerville', serif;
-      font-weight: 700;
-    }
-
-    .schedule-attire .attire-spine {
-      width: 24px;
-      flex-shrink: 0;
-    }
-
-    .schedule-attire .attire-right {
-      flex: 1;
-      text-align: left;
-      font-weight: 400;
-      padding-left: 24px;
-    }
-
-    .schedule-details {
-      margin-top: 16px;
-      font-family: 'Baskerville Display PT', 'Libre Baskerville', 'Baskerville', serif;
-      font-size: 16px;
-      font-style: italic;
-      color: #8B8B6A;
-      text-align: center;
-    }
-
-    .timeline-spine-line {
-      position: absolute;
-      top: 22px;
-      bottom: 22px;
-      width: 1px;
-      background-color: #5C6631;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .timeline-dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background-color: #5C6631;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-      margin: 16.5px 0; /* centers in 44px row height */
-    }
 
     /* ── RSVP ── */
     #rsvp {
@@ -1026,41 +1025,47 @@
       <h3>Willow Hill</h3>
       <p><a href="https://www.google.com/maps/search/?api=1&query=459+Wolf+Den+Rd+Brooklyn+CT+06234" target="_blank">459 Wolf Den Rd, Brooklyn, CT 06234</a></p>
     </div>
-    <div class="timeline">
-      <!-- Left column: 9.25.26 -->
-      <div class="timeline-col timeline-col-left">
-        <div class="timeline-col-date">9.25.26</div>
-        <span class="timeline-item-label">Welcome Party</span>
-        <span class="timeline-item-label"></span>
-        <span class="timeline-item-label"></span>
-        <span class="timeline-item-label"></span>
-      </div>
-      <!-- Center spine -->
-      <div class="timeline-spine">
-        <div class="timeline-spine-spacer"></div>
-        <div class="timeline-spine-body">
-          <div class="timeline-spine-line"></div>
-          <div class="timeline-dot"></div>
-          <div class="timeline-dot"></div>
-          <div class="timeline-dot"></div>
-          <div class="timeline-dot"></div>
+    <div class="schedule-events">
+
+      <!-- Welcome Party -->
+      <div class="schedule-event">
+        <div class="event-date">Friday, September 25, 2026</div>
+        <div class="event-body">
+          <div class="event-left">
+            <h3 class="event-name">Welcome Party</h3>
+            <div class="event-time">7:00 – 9:00 PM</div>
+          </div>
+          <div class="event-divider"></div>
+          <div class="event-right">
+            <p class="event-loc">The Barn</p>
+            <p>Pizza, prosecco &amp; antipasti to kick off the weekend!</p>
+            <p class="event-attire"><strong>Attire: Tuscan Chic</strong><br>Think breezy linens, fabulous florals, bold accessories… color highly encouraged. Make Nonna proud!</p>
+          </div>
         </div>
       </div>
-      <!-- Right column: 9.26.26 -->
-      <div class="timeline-col timeline-col-right">
-        <div class="timeline-col-date">9.26.26</div>
-        <span class="timeline-item-label">Ceremony</span>
-        <span class="timeline-item-label">Cocktail Hour</span>
-        <span class="timeline-item-label">Reception</span>
-        <span class="timeline-item-label">After Party</span>
+
+      <!-- Wedding Day -->
+      <div class="schedule-event">
+        <div class="event-date">Saturday, September 26, 2026</div>
+        <div class="event-body">
+          <div class="event-left">
+            <h3 class="event-name">Wedding Day</h3>
+          </div>
+          <div class="event-divider"></div>
+          <div class="event-right">
+            <div class="event-schedule">
+              <div class="sched-row"><span class="sched-name">Sip &amp; Gather</span><span class="sched-detail">The Forest Cove · 4:00 PM</span></div>
+              <div class="sched-row"><span class="sched-name">Ceremony</span><span class="sched-detail">The Field · 4:30 PM</span></div>
+              <div class="sched-row"><span class="sched-name">Cocktail Hour</span><span class="sched-detail">The Forest Garden · 5:00–6:30 PM</span></div>
+              <div class="sched-row"><span class="sched-name">Reception</span><span class="sched-detail">The Meadow · 6:30–10:00 PM</span></div>
+              <div class="sched-row"><span class="sched-name">After Party</span><span class="sched-detail">The Barn · 10:00 PM – Midnight</span></div>
+            </div>
+            <p class="event-attire"><strong>Attire: Formal (Black Tie Optional)</strong></p>
+          </div>
+        </div>
       </div>
+
     </div>
-    <div class="schedule-attire">
-      <span class="attire-left"><strong>Attire:</strong> Tuscan Chic</span>
-      <span class="attire-spine"></span>
-      <span class="attire-right"><strong>Attire:</strong> Formal (Black Tie Optional)</span>
-    </div>
-    <div class="schedule-details">Details to follow</div>
   </section>
 
   <!-- RSVP -->
